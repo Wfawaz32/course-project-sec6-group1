@@ -1,4 +1,5 @@
 <?php
+
 /**
  * User Management API
  *
@@ -150,7 +151,7 @@ function getUserById($db, $id)
     // TODO: If no row is found, call sendResponse() with an error message and HTTP 404.
     //       If found, call sendResponse() with the row and HTTP 200.
     if (!$user) {
-        sendResponse(['error' => 'User not found'], 404);
+        sendResponse("User not found", 404);
     } else {
         sendResponse($user, 200);
     }
@@ -171,14 +172,14 @@ function createUser($db, $data)
 {
     // TODO: Check that name, email, and password are all present and non-empty.
     //       If any are missing, call sendResponse() with HTTP 400.
-     if (!isset($data['name']) || !isset($data['email']) || !isset($data['password'])) {
+    if (!isset($data['name']) || !isset($data['email']) || !isset($data['password'])) {
         sendResponse("Missing required fields: name, email, and password are required", 400);
     }
     // TODO: Trim whitespace from name, email, and password.
     //       Validate email format with filter_var(FILTER_VALIDATE_EMAIL).
     //       If invalid, call sendResponse() with HTTP 400.
     $name = trim($data['name']);
-    $email = trim($data['email']);  
+    $email = trim($data['email']);
     $password = trim($data['password']);
     if (!validateEmail($email)) {
         sendResponse("Invalid email format", 400);
@@ -247,7 +248,7 @@ function updateUser($db, $data)
     $id = (int) $data['id'];
     // TODO: Look up the user by id. If not found, call sendResponse() with HTTP 404.
     $checkSql = "SELECT id FROM users WHERE id = :id";
-    $checkStmt = $db->prepare($checkSql);   
+    $checkStmt = $db->prepare($checkSql);
     $checkStmt->bindValue(':id', $id);
     $checkStmt->execute();
     if (!$checkStmt->fetch()) {
@@ -257,7 +258,7 @@ function updateUser($db, $data)
     //       (name, email, is_admin). Skip any field not present in $data.
     $updates = [];
     $params = [':id' => $id];
-    
+
     if (isset($data['name'])) {
         $updates[] = "name = :name";
         $params[':name'] = sanitizeInput($data['name']);
@@ -359,41 +360,41 @@ function changePassword($db, $data)
     if (!isset($data['id']) || !isset($data['current_password']) || !isset($data['new_password'])) {
         sendResponse("Missing required fields: id, current_password, and new_password are required", 400);
     }
-        $id = (int) $data['id'];
-        $current_password = trim($data['current_password']);
-        $new_password = trim($data['new_password']);
+    $id = (int) $data['id'];
+    $current_password = trim($data['current_password']);
+    $new_password = trim($data['new_password']);
 
     // TODO: Validate that new_password is at least 8 characters.
     //       If not, call sendResponse() with HTTP 400.
-if (strlen($new_password) < 8) {
+    if (strlen($new_password) < 8) {
         sendResponse("New password must be at least 8 characters", 400);
     }
     // TODO: SELECT password FROM users WHERE id = :id to retrieve the current hash.
     //       If no user is found, call sendResponse() with HTTP 404.
-$sql = "SELECT password FROM users WHERE id = :id";
+    $sql = "SELECT password FROM users WHERE id = :id";
     $stmt = $db->prepare($sql);
     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
     if (!$user) {
         sendResponse("User not found", 404);
     }
     // TODO: Call password_verify($current_password, $hash).
     //       If verification fails, call sendResponse() with HTTP 401 (Unauthorized).
- if (!password_verify($current_password, $user['password'])) {
+    if (!password_verify($current_password, $user['password'])) {
         sendResponse("Current password is incorrect", 401);
     }
     // TODO: Hash the new password: password_hash($new_password, PASSWORD_DEFAULT).
     $newPasswordHash = password_hash($new_password, PASSWORD_DEFAULT);
     // TODO: Prepare and execute: UPDATE users SET password = :password WHERE id = :id
-$updateSql = "UPDATE users SET password = :password WHERE id = :id";
+    $updateSql = "UPDATE users SET password = :password WHERE id = :id";
     $updateStmt = $db->prepare($updateSql);
     $updateStmt->bindValue(':password', $newPasswordHash);
     $updateStmt->bindValue(':id', $id, PDO::PARAM_INT);
     // TODO: If successful, call sendResponse() with a success message and HTTP 200.
     //       If the query fails, call sendResponse() with HTTP 500.
-  if ($updateStmt->execute()) {
+    if ($updateStmt->execute()) {
         sendResponse("Password updated successfully", 200);
     } else {
         sendResponse("Failed to update password", 500);
@@ -418,7 +419,7 @@ try {
     } elseif ($method === 'POST') {
         // TODO: If the 'action' query parameter equals 'change_password', call changePassword($db, $data).
         // TODO: Otherwise, call createUser($db, $data).
-if ($action === 'change_password') {
+        if ($action === 'change_password') {
             changePassword($db, $data);
         } else {
             createUser($db, $data);
@@ -426,23 +427,21 @@ if ($action === 'change_password') {
     } elseif ($method === 'PUT') {
         // TODO: Call updateUser($db, $data).
         //       The user id to update comes from the JSON body, not the query string.
-updateUser($db, $data);
+        updateUser($db, $data);
     } elseif ($method === 'DELETE') {
         // TODO: Read the 'id' query parameter.
         // TODO: Call deleteUser($db, $id).
- deleteUser($db, $id);
+        deleteUser($db, $id);
     } else {
         // TODO: Return HTTP 405 (Method Not Allowed) with a JSON error message.
         sendResponse("Method not allowed", 405);
     }
-
 } catch (PDOException $e) {
     // TODO: Log the error (e.g. error_log($e->getMessage())).
     // TODO: Call sendResponse() with a generic "Database error" message and HTTP 500.
     //       Do NOT expose the raw exception message to the client.
     error_log("Database error: " . $e->getMessage());
     sendResponse("Database error occurred", 500);
-
 } catch (Exception $e) {
     // TODO: Call sendResponse() with the exception message and HTTP 500.
     error_log("General error: " . $e->getMessage());
@@ -465,12 +464,12 @@ updateUser($db, $data);
 function sendResponse($data, $statusCode = 200)
 {
     // TODO: Call http_response_code($statusCode).
- http_response_code($statusCode);
+    http_response_code($statusCode);
     // TODO: If $statusCode indicates success (< 400), echo:
     //         json_encode(['success' => true, 'data' => $data])
     //       Otherwise echo:
     //         json_encode(['success' => false, 'message' => $data])
-if ($statusCode >= 200 && $statusCode < 400) {
+    if ($statusCode < 400) {
         echo json_encode(['success' => true, 'data' => $data]);
     } else {
         echo json_encode(['success' => false, 'message' => $data]);
@@ -505,10 +504,8 @@ function sanitizeInput($data)
     // TODO: strip_tags(...)
     // TODO: htmlspecialchars(..., ENT_QUOTES, 'UTF-8')
     // TODO: Return the sanitized value.
-     $data = trim($data);
+    $data = trim($data);
     $data = strip_tags($data);
     $data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
     return $data;
 }
-
-?>

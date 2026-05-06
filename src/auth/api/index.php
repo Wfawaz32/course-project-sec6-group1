@@ -95,7 +95,7 @@ try {
         throw new Exception('Database connection function not found');
     }
     $pdo = getDBConnection();
-
+ 
 // TODO: Wrap database operations in a try-catch block to handle PDO exceptions
 // This ensures you can return a proper JSON error response if something goes wrong
 

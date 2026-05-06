@@ -29,7 +29,10 @@ header('Access-Control-Allow-Headers: Content-Type');
 // Use the $_SERVER superglobal to check the REQUEST_METHOD
 // If the request is not POST, return an error response and exit
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-     http_response_code(200);
+     echo json_encode([
+        'success' => false,
+        'message' => 'Invalid request method. Only POST is allowed.'
+    ]);
     exit();
 }
 
@@ -56,8 +59,8 @@ if (!isset($postData['email']) || !isset($postData['password'])) {
 
 // TODO: Store the email and password in variables
 // Trim any whitespace from the email
-$email = trim($rawData['email']);
-$password = $rawData['password'];
+$email = trim($postData['email']);
+$password = $postData['password'];
 
 
 // --- Server-Side Validation (Optional but Recommended) ---
@@ -125,7 +128,7 @@ try {
     // --- Verify User Exists and Password Matches ---
     // TODO: Check if a user was found
     // The fetch method returns false if no record matches
-    if (!$user) {
+    if ($user) {
         
     // TODO: If user exists, verify the password
     // Use password_verify() to compare the submitted password with the hashed password from the database

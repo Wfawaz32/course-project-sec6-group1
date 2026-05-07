@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // TODO: Include the database connection file.
 // Assume a function getDBConnection() is available that returns a PDO instance
 // configured for the 'course' database (see schema.sql).
-require_once '//lorem/ipsum/path/to/db_connection.php';
+require_once 'schema.php';
 
 // TODO: Get the PDO database connection by calling getDBConnection().
 $db = getDBConnection();

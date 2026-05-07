@@ -43,35 +43,38 @@ const userTableHeaders = document.querySelectorAll("#user-table thead th");
  */
 
 function createUserRow(user) {
-  const tr = document.createElement("tr");
+   const tr = document.createElement("tr");
 
-  const nameTd = document.createElement("td");
-  nameTd.textContent = user.name;
-  tr.appendChild(nameTd);
+   const nameTd = document.createElement("td");
+    nameTd.textContent = user.name;
 
-  const emailTd = document.createElement("td");
-  emailTd.textContent = user.email;
-  tr.appendChild(emailTd);
+    const emailTd = document.createElement("td");
+    emailTd.textContent = user.email;
 
-  const adminTd = document.createElement("td");
-  adminTd.textContent = user.is_admin === 1 ? "Yes" : "No";
-  tr.appendChild(adminTd);
+    const adminTd = document.createElement("td");
+    adminTd.textContent = Number(user.is_admin) === 1 ? "Yes" : "No";
 
-  const actionsTd = document.createElement("td");
-  const editBtn = document.createElement("button");
-  editBtn.className = "edit-btn";
-  editBtn.setAttribute("data-id", user.id);
-  editBtn.textContent = "Edit";
-  actionsTd.appendChild(editBtn);
+    const actionsTd = document.createElement("td");
 
-  const deleteBtn = document.createElement("button");
-  deleteBtn.className = "delete-btn";
-  deleteBtn.setAttribute("data-id", user.id);
-  deleteBtn.textContent = "Delete";
-  actionsTd.appendChild(deleteBtn);
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "Edit";
+    editBtn.className = "edit-btn";
+    editBtn.dataset.id = user.id;
 
-  tr.appendChild(actionsTd);
-  return tr;
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
+    deleteBtn.className = "delete-btn";
+    deleteBtn.dataset.id = user.id;
+
+    actionsTd.appendChild(editBtn);
+    actionsTd.appendChild(deleteBtn);
+
+    tr.appendChild(nameTd);
+    tr.appendChild(emailTd);
+    tr.appendChild(adminTd);
+    tr.appendChild(actionsTd);
+
+    return tr;
 }
 
 /**

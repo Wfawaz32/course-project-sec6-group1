@@ -126,14 +126,16 @@ function handleChangePassword(event) {
     alert("Password must be at least 8 characters.");
     return;
   }
-  
+
+  document.getElementById("current-password").value = "";
+  document.getElementById("new-password").value = "";
+  document.getElementById("confirm-password").value = "";
+
   const adminId = 1;
   
   fetch('../api/index.php?action=change_password', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
+    headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({
       id: parseInt(adminId),
       current_password: currentPassword,

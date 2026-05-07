@@ -127,8 +127,7 @@ function handleChangePassword(event) {
     return;
   }
   
-  const adminId = prompt("Enter your admin user ID:", "1");
-  if (!adminId) return;
+  const adminId = 1;
   
   fetch('../api/index.php?action=change_password', {
     method: 'POST',

@@ -55,7 +55,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once 'db_connection.php'; //     will need work later
 
 // TODO: Get the PDO database connection by calling getDBConnection().
-$db = getDBConnection();
+$db = getDBConnection();{
+     $host = 'localhost';
+    $dbname = 'course';
+    $username = 'root';      // XAMPP default username
+    $password = '';          // XAMPP default password (empty)
+    
+    try {
+        $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        return $pdo;
+    } catch(PDOException $e) {
+        die("Connection failed: " . $e->getMessage());
+    }
+}
 
 // TODO: Read the HTTP request method from $_SERVER['REQUEST_METHOD'].
 $method = $_SERVER['REQUEST_METHOD'];

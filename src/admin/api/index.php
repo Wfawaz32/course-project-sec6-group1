@@ -174,6 +174,7 @@ function createUser($db, $data)
     //       If any are missing, call sendResponse() with HTTP 400.
     if (!isset($data['name']) || !isset($data['email']) || !isset($data['password'])) {
         sendResponse("Missing required fields: name, email, and password are required", 400);
+        return;
     }
     // TODO: Trim whitespace from name, email, and password.
     //       Validate email format with filter_var(FILTER_VALIDATE_EMAIL).

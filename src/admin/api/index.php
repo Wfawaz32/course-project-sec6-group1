@@ -56,7 +56,7 @@ require_once 'db_connection.php'; //     will need work later
 
 // TODO: Get the PDO database connection by calling getDBConnection().
 $db = getDBConnection();{
-     $host = 'localhost';
+    $host = 'localhost';
     $dbname = 'course';
     $username = 'root';      // XAMPP default username
     $password = '';          // XAMPP default password (empty)

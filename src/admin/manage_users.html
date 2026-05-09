@@ -25,7 +25,7 @@
 
 </head>
 
-<body>
+<body style="display: flex; flex-direction: column; align-items: left; min-height: 100vh; margin: 0; padding: 2rem; box-sizing: border-box;">
 
      <!-- TODO: Create a 'header' element for the top of the page. -->
      <!-- TODO: Inside the header, add a main heading (e.g., 'h1') with the text "Admin Portal". -->
@@ -43,6 +43,8 @@
 
                <!-- TODO: Add a sub-heading (e.g., 'h2') with the text "Change Your Password". -->
                <h2>Change Your Password</h2>
+               <details>
+                    <summary>Manage Password</summary>
 
                <!-- TODO: Create a 'form' for changing the password.
                  - action="#"
@@ -89,6 +91,7 @@
                     </fieldset>
                     <!-- End of the password form. -->
                </form>
+          </details>
                <!-- End of the password management section. -->
           </section>
 
@@ -167,6 +170,8 @@
                <!-- Subsection 2.2: User List -->
                <!-- TODO: Add a sub-heading (e.g., 'h3') for the list of users, e.g., "Registered Users". -->
                <h3>Registered Users</h3>
+               <details>
+                    <summary>View Users</summary>
 
                <!-- TODO: Add a search input field.
                  - type="text"
@@ -201,6 +206,7 @@
                </table>
 
                <!-- End of the user management section. -->
+               </details>
           </section>
 
           <!-- End of the main content area. -->

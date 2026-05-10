@@ -23,13 +23,12 @@ function createResourceRow(resource) {
   return row;
 }
 
-function renderTable() {
-  if (resourcesTbody) {
-    resourcesTbody.innerHTML = '';
-    resources.forEach((resource) => {
-      resourcesTbody.appendChild(createResourceRow(resource));
-    });
-  }
+function renderTable(resourcesParam = null) {
+  const dataToRender = resourcesParam !== null ? resourcesParam : resources;
+  resourcesTbody.innerHTML = '';
+  dataToRender.forEach((resource) => {
+    resourcesTbody.appendChild(createResourceRow(resource));
+  });
 }
 
 async function handleAddResource(event) {

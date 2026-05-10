@@ -2,6 +2,7 @@
 let currentTopicId = null;
 let currentReplies = [];
 
+
 // --- Element Selections ---
 const topicSubject = document.getElementById("topic-subject");
 const opMessage = document.getElementById("op-message");

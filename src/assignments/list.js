@@ -23,13 +23,13 @@
 */
 
 // --- Element Selections ---
-// TODO: Select the section for the assignment list using its
-//       id 'assignment-list-section'.
+// Select the section for the assignment list using its id 'assignment-list-section'.
+const assignmentListSection = document.getElementById('assignment-list-section');
 
 // --- Functions ---
 
 /**
- * TODO: Implement createAssignmentArticle.
+ * Implement createAssignmentArticle.
  *
  * Parameters:
  *   assignment — one object from the API response with the shape:
@@ -54,11 +54,31 @@
  * the assignments table) so that details.js can read the id from the URL.
  */
 function createAssignmentArticle(assignment) {
-  // ... your implementation here ...
+  const article = document.createElement('article');
+
+  const h2 = document.createElement('h2');
+  h2.textContent = assignment.title;
+
+  const pDue = document.createElement('p');
+  pDue.textContent = `Due: ${assignment.due_date}`;
+
+  const pDesc = document.createElement('p');
+  pDesc.textContent = assignment.description;
+
+  const link = document.createElement('a');
+  link.href = `details.html?id=${assignment.id}`;
+  link.textContent = 'View Details & Discussion';
+
+  article.appendChild(h2);
+  article.appendChild(pDue);
+  article.appendChild(pDesc);
+  article.appendChild(link);
+
+  return article;
 }
 
 /**
- * TODO: Implement loadAssignments (async).
+ * Implement loadAssignments (async).
  *
  * It should:
  * 1. Use fetch() to GET data from './api/index.php'.
@@ -71,7 +91,25 @@ function createAssignmentArticle(assignment) {
  *    - Append the returned <article> to the list section.
  */
 async function loadAssignments() {
-  // ... your implementation here ...
+  try {
+    const response = await fetch('./api/index.php');
+    const result = await response.json();
+
+    if (result.success && result.data) {
+      assignmentListSection.innerHTML = ''; // Clear any existing content
+
+      result.data.forEach(assignment => {
+        const article = createAssignmentArticle(assignment);
+        assignmentListSection.appendChild(article);
+      });
+    } else {
+      console.error('Failed to load assignments:', result.message);
+      assignmentListSection.innerHTML = '<p>No assignments found.</p>';
+    }
+  } catch (error) {
+    console.error('Error fetching assignments:', error);
+    assignmentListSection.innerHTML = '<p>Error loading assignments. Please try again later.</p>';
+  }
 }
 
 // --- Initial Page Load ---

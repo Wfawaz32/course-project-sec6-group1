@@ -32,14 +32,23 @@
 let assignments = [];
 
 // --- Element Selections ---
-// TODO: Select the assignment form by id 'assignment-form'.
+// Select the assignment form by id 'assignment-form'.
+const assignmentForm = document.getElementById('assignment-form');
 
-// TODO: Select the assignments table body by id 'assignments-tbody'.
+// Select the assignments table body by id 'assignments-tbody'.
+const assignmentsTbody = document.getElementById('assignments-tbody');
+
+// Select other elements for easy access later
+const titleInput = document.getElementById('assignment-title');
+const dueDateInput = document.getElementById('assignment-due-date');
+const descriptionInput = document.getElementById('assignment-description');
+const filesInput = document.getElementById('assignment-files');
+const submitBtn = document.getElementById('add-assignment');
 
 // --- Functions ---
 
 /**
- * TODO: Implement createAssignmentRow.
+ * Implement createAssignmentRow.
  *
  * Parameters:
  *   assignment — one assignment object with shape:
@@ -55,11 +64,44 @@ let assignments = [];
  *      The data-id holds the integer primary key from the assignments table.
  */
 function createAssignmentRow(assignment) {
-  // ... your implementation here ...
+  const tr = document.createElement('tr');
+
+  const tdTitle = document.createElement('td');
+  tdTitle.textContent = assignment.title;
+
+  const tdDueDate = document.createElement('td');
+  tdDueDate.textContent = assignment.due_date;
+
+  const tdDescription = document.createElement('td');
+  tdDescription.textContent = assignment.description;
+
+  const tdActions = document.createElement('td');
+  
+  const editBtn = document.createElement('button');
+  editBtn.className = 'edit-btn';
+  editBtn.dataset.id = assignment.id;
+  editBtn.textContent = 'Edit';
+
+  const deleteBtn = document.createElement('button');
+  deleteBtn.className = 'delete-btn';
+  deleteBtn.dataset.id = assignment.id;
+  deleteBtn.textContent = 'Delete';
+
+  tdActions.appendChild(editBtn);
+  // Add a space between buttons for visual separation if desired
+  tdActions.appendChild(document.createTextNode(' '));
+  tdActions.appendChild(deleteBtn);
+
+  tr.appendChild(tdTitle);
+  tr.appendChild(tdDueDate);
+  tr.appendChild(tdDescription);
+  tr.appendChild(tdActions);
+
+  return tr;
 }
 
 /**
- * TODO: Implement renderTable.
+ * Implement renderTable.
  *
  * It should:
  * 1. Clear the assignments table body (set innerHTML to "").
@@ -68,11 +110,15 @@ function createAssignmentRow(assignment) {
  *    append the <tr> to the table body.
  */
 function renderTable() {
-  // ... your implementation here ...
+  assignmentsTbody.innerHTML = '';
+  assignments.forEach(assignment => {
+    const tr = createAssignmentRow(assignment);
+    assignmentsTbody.appendChild(tr);
+  });
 }
 
 /**
- * TODO: Implement handleAddAssignment (async).
+ * Implement handleAddAssignment (async).
  *
  * This is the event handler for the form's 'submit' event.
  * It should:
@@ -96,11 +142,51 @@ function renderTable() {
  *        - Reset the form.
  */
 async function handleAddAssignment(event) {
-  // ... your implementation here ...
+  event.preventDefault();
+
+  const title = titleInput.value.trim();
+  const due_date = dueDateInput.value.trim();
+  const description = descriptionInput.value.trim();
+  
+  // Split files by newline, trim whitespace, and filter out empty strings
+  const filesString = filesInput.value;
+  const files = filesString.split('\n')
+                           .map(line => line.trim())
+                           .filter(line => line !== '');
+
+  const fields = { title, due_date, description, files };
+  const editId = submitBtn.dataset.editId;
+
+  if (editId) {
+    await handleUpdateAssignment(Number(editId), fields);
+  } else {
+    try {
+      const response = await fetch('./api/index.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(fields)
+      });
+      const result = await response.json();
+
+      if (result.success) {
+        const newAssignment = {
+          id: result.id,
+          ...fields
+        };
+        assignments.push(newAssignment);
+        renderTable();
+        assignmentForm.reset();
+      } else {
+        console.error('Failed to create assignment:', result.message);
+      }
+    } catch (error) {
+      console.error('Error creating assignment:', error);
+    }
+  }
 }
 
 /**
- * TODO: Implement handleUpdateAssignment (async).
+ * Implement handleUpdateAssignment (async).
  *
  * Parameters:
  *   id     — the integer primary key of the assignment being edited.
@@ -117,11 +203,38 @@ async function handleAddAssignment(event) {
  *      its data-edit-id attribute.
  */
 async function handleUpdateAssignment(id, fields) {
-  // ... your implementation here ...
+  try {
+    const payload = { id, ...fields };
+    const response = await fetch('./api/index.php', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const result = await response.json();
+
+    if (result.success) {
+      // Update global array
+      const index = assignments.findIndex(a => a.id === id);
+      if (index !== -1) {
+        assignments[index] = { id, ...fields };
+      }
+
+      renderTable();
+      assignmentForm.reset();
+
+      // Restore submit button state
+      submitBtn.textContent = 'Add Assignment';
+      delete submitBtn.dataset.editId;
+    } else {
+      console.error('Failed to update assignment:', result.message);
+    }
+  } catch (error) {
+    console.error('Error updating assignment:', error);
+  }
 }
 
 /**
- * TODO: Implement handleTableClick (async).
+ * Implement handleTableClick (async).
  *
  * This is a delegated click listener on the assignments table body.
  * It should:
@@ -144,11 +257,46 @@ async function handleUpdateAssignment(id, fields) {
  *       assignment's id.
  */
 async function handleTableClick(event) {
-  // ... your implementation here ...
+  const target = event.target;
+
+  if (target.classList.contains('delete-btn')) {
+    const id = Number(target.dataset.id);
+    try {
+      const response = await fetch(`./api/index.php?id=${id}`, {
+        method: 'DELETE'
+      });
+      const result = await response.json();
+
+      if (result.success) {
+        assignments = assignments.filter(a => a.id !== id);
+        renderTable();
+      } else {
+        console.error('Failed to delete assignment:', result.message);
+      }
+    } catch (error) {
+      console.error('Error deleting assignment:', error);
+    }
+
+  } else if (target.classList.contains('edit-btn')) {
+    const id = Number(target.dataset.id);
+    const assignment = assignments.find(a => a.id === id);
+
+    if (assignment) {
+      // Populate fields
+      titleInput.value = assignment.title || '';
+      dueDateInput.value = assignment.due_date || '';
+      descriptionInput.value = assignment.description || '';
+      filesInput.value = (assignment.files || []).join('\n');
+
+      // Update button text and attach dataset id
+      submitBtn.textContent = 'Update Assignment';
+      submitBtn.dataset.editId = id;
+    }
+  }
 }
 
 /**
- * TODO: Implement loadAndInitialize (async).
+ * Implement loadAndInitialize (async).
  *
  * It should:
  * 1. Send a GET to './api/index.php'.
@@ -161,7 +309,24 @@ async function handleTableClick(event) {
  *    (calls handleTableClick — event delegation for edit and delete).
  */
 async function loadAndInitialize() {
-  // ... your implementation here ...
+  try {
+    const response = await fetch('./api/index.php');
+    const result = await response.json();
+
+    if (result.success) {
+      assignments = result.data || [];
+      renderTable();
+    } else {
+      console.error('Failed to load assignments:', result.message);
+    }
+
+    // Attach Event Listeners
+    assignmentForm.addEventListener('submit', handleAddAssignment);
+    assignmentsTbody.addEventListener('click', handleTableClick);
+    
+  } catch (error) {
+    console.error('Error during initialization:', error);
+  }
 }
 
 // --- Initial Page Load ---

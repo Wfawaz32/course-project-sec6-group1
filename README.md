@@ -1,3 +1,4 @@
+[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/rvj7Fl7r)
 # ITCS333 Internet Software Development — Course Website Project
 
 ## Overview
@@ -20,11 +21,11 @@ The website covers five functional areas, each assigned to one team member.
 
 | Task | Description | Student ID | GitHub Username |
 |------|-------------|------------|-----------------|
-| 1 | Home Page, Authentication & User Management | | |
-| 2 | Course Resources | | |
-| 3 | Weekly Breakdown | | |
-| 4 | Assignments | | |
-| 5 | Discussion Board | | |
+| 1 | Home Page, Authentication & User Management | 202208704 | Hussain Ali Ahmed Ali |
+| 2 | Course Resources |202307865 |Wesam abdurabu masharh |
+| 3 | Weekly Breakdown | 202303470 | Youssef Osama Ahmed |
+| 4 | Assignments |202106889 | fawaz Abdo Alhalemi |  
+| 5 | Discussion Board |20190712 |Salem Ebrahim Buhejji |
 
 ---
 

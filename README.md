@@ -25,7 +25,7 @@ The website covers five functional areas, each assigned to one team member.
 | 2 | Course Resources |202307865 |Wesam abdurabu masharh |
 | 2 | Course Resources | | |
 | 3 | Weekly Breakdown | 202303470 | Youssef Osama Ahmed |
-| 4 | Assignments | | |
+| 4 | Assignments |202106889 | Wfawaz32 |
 | 5 | Discussion Board |20190712 |Salem Ebrahim Buhejji |
 
 ---
